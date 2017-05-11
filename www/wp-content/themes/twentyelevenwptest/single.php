@@ -22,6 +22,8 @@ get_header(); ?>
 
 					<?php get_template_part( 'content-single', get_post_format() ); ?>
 
+					
+
 					<?php comments_template( '', true ); ?>
 
 				<?php endwhile; // end of the loop. ?>
