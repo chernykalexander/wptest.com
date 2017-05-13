@@ -128,6 +128,18 @@ function my_signature_create_menu() {
 */
 
 
+// Первая зацепка которая срабатывает во время загрузки скриптов/стилей на страницу админ-панели
+add_action( 'admin_enqueue_scripts', 'load_custom_wp_admin_style' );
+
+function load_custom_wp_admin_style( $hook ) {
+    
+    // Ставит файл CSS стилей в очередь на загрузку.
+    wp_enqueue_style( 'style-for-my-signature', plugins_url( 'css/style.css', __FILE__ ) );
+
+}
+
+
+
 // Эта зацепка запускается после создания базовой структуры меню панели администратора.
 add_action( 'admin_menu', 'my_signature_create_settings_submenu' );
 
@@ -167,9 +179,31 @@ function my_signature_register_settings() {
 
 function my_signature_sanitize_options( $input ) {
 
-	$input[ 'option_name' ] = sanitize_text_field( $input[ 'option_name' ] );
-	$input[ 'option_email' ] = sanitize_email( $input[ 'option_email' ] );
+	// функции очистки перед сохранением в базу данных
+
+	// sanitize_text_field() - удаляет все недействительные символы UTF-8, конвертирует
+	// единичные угловые скобки < в объекты HTML и удаляет все теги, разрывы строки
+	// и дополнительные пробелы.
+	$input[ 'option_title' ] = sanitize_text_field( $input[ 'option_title' ] );
+	
+	// Мощной функцией обработки и очистки ненадежного HTML является wp_kses().
+	// Она используется в WordPress, чтобы проверить, что пользователи посылают только
+	// разрешенные теги и атрибуты HTML
+	$allowed_tags = array(
+		'strong' => array (),
+		'a' => array(
+			'href' => array(),
+			'title' => array()
+		),
+		'p' => array (),
+	);	
+
+	$input[ 'option_article' ] = wp_kses( $input[ 'option_article' ], $allowed_tags );
+	// $input[ 'option_article' ] = sanitize_text_field( $input[ 'option_article' ] );
+	// $input[ 'option_article' ] = sanitize_email( $input[ 'option_article' ] );
+	
 	$input[ 'option_url' ] = esc_url( $input[ 'option_url' ] );
+	
 	return $input;
 
 };
@@ -191,11 +225,20 @@ function my_signature_settings_page() {
 		<table class="form-table">
 			<tr valign="top">
 			<th scope="row">Подпись для заголовка:</th>
-			<td><input type="text" name="my_signature_options[option_name]" value="<?php echo esc_attr( $my_signature_options['option_name'] );?>" /></td>
+			<td><input type="text" size="80" name="my_signature_options[option_title]" value="<?php echo esc_attr( $my_signature_options['option_title'] );?>" />
+				<label><input type="checkbox" name="my_signature_check_title" />Использовать</label>
+				<p class="pre-description">Здесь вы можете указать свое имя, никнейм или адрес своего сайта. Строка добавится в конец заголовка. Помогает улчшить SEO-оптимизацию вашего сайта.</p>				
+			</td>
 			</tr>
 			<tr valign="top">
-			<th scope="row">Email</th>
-			<td><input type="text" name="my_signature_options[option_email]" value="<?php echo esc_attr( $my_signature_options['option_email'] ); ?>" /></td>
+			<th scope="row">Подпись для статьи:</th>
+			<td><textarea rows="10" cols="80" name="my_signature_options[option_article]"><?php echo esc_html( $my_signature_options['option_article'] ); ?></textarea>
+				<label><input type="checkbox" name="my_signature_check_article" checked />Использовать</label>
+				<p class="pre-description">Укажите подпись. Она будет добавлена в конец статьи. Подпись может быть не только простым текстом но и содержать html-теги: &lt;a&gt;, &lt;p&gt; и &lt;strong&gt;</p>
+			</td>
+			<!-- 
+			<td><input type="text" name="my_signature_options[option_article]" value="<?php //echo esc_textarea( $my_signature_options['option_article'] );  ?>" /></td>
+			 -->
 			</tr>
 			<tr valign="top">
 			<th scope="row">URL</th>
