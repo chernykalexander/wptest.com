@@ -49,7 +49,15 @@ function my_signature_title( $title ) {
 	
 	// условный тег is_single() для проверки того, что текст для подписки добавляется только на страницу одиночной записи
 	if( is_single() ) {
-		$title .= ' - By Example.com';	
+
+		$my_signature_options = get_option( 'my_signature_options' );
+
+		if ( $my_signature_options[ 'option_check_title' ] == 'on' && !empty( $my_signature_options[ 'option_title' ] ) ) {
+			$title .= ' ' . esc_attr( $my_signature_options[ 'option_title' ] );
+		};
+		
+		// $title .= ' - By Example.com';	
+
 	};
 	
 	return $title;
@@ -65,9 +73,14 @@ function my_signature_content( $content ) {
 	// условный тег is_single() для проверки того, что текст для подписки добавляется только на страницу одиночной записи
 	if( is_single() ) {
 
+		$my_signature_options = get_option( 'my_signature_options' );
+
 		// Переменная $content хранит все содержимое записи или страницы, поэтому,
-		// добавляя текст для подписки, вы помещаете его в нижнюю часть контента записи.		
-		$content .= '<p>Моя подпись</p>';
+		// добавляя текст для подписки, вы помещаете его в нижнюю часть контента записи.
+		if ( $my_signature_options[ 'option_check_article' ] == 'on' && !empty( $my_signature_options[ 'option_article' ] ) ) {
+			$content .= esc_html( $my_signature_options[ 'option_article' ] );
+		};
+		// $content .= '<p>Моя подпись</p>';
 
 	};
 	
@@ -202,6 +215,10 @@ function my_signature_sanitize_options( $input ) {
 	// $input[ 'option_article' ] = sanitize_text_field( $input[ 'option_article' ] );
 	// $input[ 'option_article' ] = sanitize_email( $input[ 'option_article' ] );
 	
+	$input[ 'option_check_title' ] = sanitize_text_field( $input[ 'option_check_title' ] );
+	$input[ 'option_check_article' ] = sanitize_text_field( $input[ 'option_check_article' ] );
+
+
 	$input[ 'option_url' ] = esc_url( $input[ 'option_url' ] );
 	
 	return $input;
@@ -225,15 +242,15 @@ function my_signature_settings_page() {
 		<table class="form-table">
 			<tr valign="top">
 			<th scope="row">Подпись для заголовка:</th>
-			<td><input type="text" size="80" name="my_signature_options[option_title]" value="<?php echo esc_attr( $my_signature_options['option_title'] );?>" />
-				<label><input type="checkbox" name="my_signature_check_title" />Использовать</label>
+			<td><input type="text" size="80" name="my_signature_options[option_title]" value="<?php echo esc_attr( $my_signature_options[ 'option_title' ] );?>" />
+				<label><input type="checkbox" name="my_signature_options[option_check_title]" <?php if ($my_signature_options[ 'option_check_title' ] == 'on') echo "checked"; ?> />Использовать</label>
 				<p class="pre-description">Здесь вы можете указать свое имя, никнейм или адрес своего сайта. Строка добавится в конец заголовка. Помогает улчшить SEO-оптимизацию вашего сайта.</p>				
 			</td>
 			</tr>
 			<tr valign="top">
 			<th scope="row">Подпись для статьи:</th>
-			<td><textarea rows="10" cols="80" name="my_signature_options[option_article]"><?php echo esc_html( $my_signature_options['option_article'] ); ?></textarea>
-				<label><input type="checkbox" name="my_signature_check_article" checked />Использовать</label>
+			<td><textarea rows="10" cols="80" name="my_signature_options[option_article]"><?php echo esc_html( $my_signature_options[ 'option_article' ] ); ?></textarea>
+				<label><input type="checkbox" name="my_signature_options[option_check_article]" <?php if ($my_signature_options[ 'option_check_article' ] == 'on') echo "checked"; ?> />Использовать</label>
 				<p class="pre-description">Укажите подпись. Она будет добавлена в конец статьи. Подпись может быть не только простым текстом но и содержать html-теги: &lt;a&gt;, &lt;p&gt; и &lt;strong&gt;</p>
 			</td>
 			<!-- 
