@@ -1,3 +1,22 @@
 .pre-description {
 	width: 500px; /* Ширина блока */
 }
+
+ul.horizont {
+	margin: 1px; /* Обнуляем значение отступов */
+	padding: 4px; /* Значение полей */
+}
+
+ul.horizont li {
+	display: inline; /* Отображать как строчный элемент */
+	margin-right: 5px; /* Отступ слева */
+	border: 1px solid #0085ba; /* Рамка вокруг текста */
+	padding: 4px 7px; /* Поля вокруг текста */
+	color: #23282d; /* Цвет текста */
+}
+
+ul.horizont li:hover {
+	background-color: #0085ba;
+	color: #ffffff; /* Цвет текста */	
+	cursor: default;
+}

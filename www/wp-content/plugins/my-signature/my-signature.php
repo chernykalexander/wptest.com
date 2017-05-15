@@ -169,8 +169,12 @@ add_action( 'admin_enqueue_scripts', 'load_custom_wp_admin_style' );
 
 function load_custom_wp_admin_style( $hook ) {
     
+    // Ставит JavaScript файлы в очередь на загрузку.
+    wp_enqueue_script( 'script-jquery', plugins_url( 'js/jquery-3.2.1.min.js', __FILE__ ) );
+    wp_enqueue_script( 'script-my-signature', plugins_url( 'js/script-checkbox.js', __FILE__ ) );
+    
     // Ставит файл CSS стилей в очередь на загрузку.
-    wp_enqueue_style( 'style-for-my-signature', plugins_url( 'css/style.css', __FILE__ ) );
+    wp_enqueue_style( 'style-my-signature', plugins_url( 'css/style.css', __FILE__ ) );
 
 }
 
@@ -235,8 +239,6 @@ function my_signature_sanitize_options( $input ) {
 	);	
 
 	$input[ 'option_article' ] = wp_kses( $input[ 'option_article' ], $allowed_tags );
-	// $input[ 'option_article' ] = sanitize_text_field( $input[ 'option_article' ] );
-	// $input[ 'option_article' ] = sanitize_email( $input[ 'option_article' ] );
 	
 	$input[ 'option_check_title' ] = sanitize_text_field( $input[ 'option_check_title' ] );
 	$input[ 'option_check_article' ] = sanitize_text_field( $input[ 'option_check_article' ] );
@@ -292,6 +294,12 @@ function my_signature_settings_page() {
 					};	
 				?>
 				<br>
+				<p><ul class="horizont">
+					<li id="checkbox-invert" >Инвертировать</li>
+					<li id="checkbox-selectall" >Выделить все</li>
+					<li id="checkbox-cancel-selectall" >Отменить выделение</li>
+					<li id="checkbox-restore-selectall" >Восстановить выделение</li>
+				</ul></p>
 				<p class="pre-description">Выберите те рубрики автором которых вы являетесь. В конец статьи, к этим рубрика, будет добавлена подпись для статьи.</p>
 			</td>
 			</tr>
