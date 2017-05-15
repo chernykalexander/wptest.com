@@ -73,11 +73,34 @@ function my_signature_content( $content ) {
 	// условный тег is_single() для проверки того, что текст для подписки добавляется только на страницу одиночной записи
 	if( is_single() ) {
 
+		// Получить список всех опций для Подписи
 		$my_signature_options = get_option( 'my_signature_options' );
+		
+		// Получить список всех категорий к которым относится данный контенты
+		$article_categorys = get_the_category();
+
+		// Показывать подпись для контента если категория отмечена галочкой
+		$is_signature = false;
+
+		// Пробижимся по списку категорий для текущего контента и будем искать
+		// есть ли в массиве опций категории отмеченные галочкой
+		foreach($article_categorys as $article_categorys) {
+			
+			if ( $my_signature_options[ 'option_cat_' . $article_categorys->cat_ID ] == 'on' ) {
+			
+				$is_signature = true;
+				break;
+			
+			};
+
+		}
 
 		// Переменная $content хранит все содержимое записи или страницы, поэтому,
 		// добавляя текст для подписки, вы помещаете его в нижнюю часть контента записи.
-		if ( $my_signature_options[ 'option_check_article' ] == 'on' && !empty( $my_signature_options[ 'option_article' ] ) ) {
+		if ( $my_signature_options[ 'option_check_article' ] == 'on' && 
+			!empty( $my_signature_options[ 'option_article' ] ) &&
+			$is_signature == true) 
+		{
 			$content .= esc_html( $my_signature_options[ 'option_article' ] );
 		};
 		// $content .= '<p>Моя подпись</p>';
@@ -218,9 +241,6 @@ function my_signature_sanitize_options( $input ) {
 	$input[ 'option_check_title' ] = sanitize_text_field( $input[ 'option_check_title' ] );
 	$input[ 'option_check_article' ] = sanitize_text_field( $input[ 'option_check_article' ] );
 
-
-	$input[ 'option_url' ] = esc_url( $input[ 'option_url' ] );
-	
 	return $input;
 
 };
@@ -242,24 +262,37 @@ function my_signature_settings_page() {
 		<table class="form-table">
 			<tr valign="top">
 			<th scope="row">Подпись для заголовка:</th>
-			<td><input type="text" size="80" name="my_signature_options[option_title]" value="<?php echo esc_attr( $my_signature_options[ 'option_title' ] );?>" />
+			<td>
+				<input type="text" size="80" name="my_signature_options[option_title]" value="<?php echo esc_attr( $my_signature_options[ 'option_title' ] );?>" />
 				<label><input type="checkbox" name="my_signature_options[option_check_title]" <?php if ($my_signature_options[ 'option_check_title' ] == 'on') echo "checked"; ?> />Использовать</label>
 				<p class="pre-description">Здесь вы можете указать свое имя, никнейм или адрес своего сайта. Строка добавится в конец заголовка. Помогает улчшить SEO-оптимизацию вашего сайта.</p>				
 			</td>
 			</tr>
 			<tr valign="top">
 			<th scope="row">Подпись для статьи:</th>
-			<td><textarea rows="10" cols="80" name="my_signature_options[option_article]"><?php echo esc_html( $my_signature_options[ 'option_article' ] ); ?></textarea>
+			<td>
+				<textarea rows="10" cols="80" name="my_signature_options[option_article]"><?php echo esc_html( $my_signature_options[ 'option_article' ] ); ?></textarea>
 				<label><input type="checkbox" name="my_signature_options[option_check_article]" <?php if ($my_signature_options[ 'option_check_article' ] == 'on') echo "checked"; ?> />Использовать</label>
 				<p class="pre-description">Укажите подпись. Она будет добавлена в конец статьи. Подпись может быть не только простым текстом но и содержать html-теги: &lt;a&gt;, &lt;p&gt; и &lt;strong&gt;</p>
 			</td>
-			<!-- 
-			<td><input type="text" name="my_signature_options[option_article]" value="<?php //echo esc_textarea( $my_signature_options['option_article'] );  ?>" /></td>
-			 -->
 			</tr>
 			<tr valign="top">
-			<th scope="row">URL</th>
-			<td><input type="text" name="my_signature_options[option_url]" value="<?php echo esc_url( $my_signature_options['option_url'] ); ?>" />
+			<th scope="row">Для каких рубрик?</th>
+			<td>
+				<?php
+					$categories = get_categories();
+					foreach ($categories as $category) {
+						$checkbox_cat = '';
+						$checkbox_cat .= '<label><input type="checkbox" ';
+						$checkbox_cat .= 'name="my_signature_options[option_cat_' . $category->cat_ID . ']" ';
+						if ($my_signature_options[ 'option_cat_' . $category->cat_ID ] == 'on')
+							$checkbox_cat .= 'checked ';
+						$checkbox_cat .= '/>' . $category->cat_name . '</label><br> ';
+						echo $checkbox_cat;
+					};	
+				?>
+				<br>
+				<p class="pre-description">Выберите те рубрики автором которых вы являетесь. В конец статьи, к этим рубрика, будет добавлена подпись для статьи.</p>
 			</td>
 			</tr>
 			</table>
