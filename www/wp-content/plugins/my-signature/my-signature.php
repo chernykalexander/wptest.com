@@ -284,14 +284,24 @@ function my_signature_settings_page() {
 				<?php
 					$categories = get_categories();
 					foreach ($categories as $category) {
+
+						if ($my_signature_options[ 'option_cat_' . $category->cat_ID ] == 'on') {
+							$db_class = 'class="db_class" ';
+							$db_checked = 'checked ';
+						} else {
+							$db_class = '';
+							$db_checked = '';
+						};
+
 						$checkbox_cat = '';
 						$checkbox_cat .= '<label><input type="checkbox" ';
+						$checkbox_cat .= $db_class;
 						$checkbox_cat .= 'name="my_signature_options[option_cat_' . $category->cat_ID . ']" ';
-						if ($my_signature_options[ 'option_cat_' . $category->cat_ID ] == 'on')
-							$checkbox_cat .= 'checked ';
+						$checkbox_cat .= $db_checked;
 						$checkbox_cat .= '/>' . $category->cat_name . '</label><br> ';
+						
 						echo $checkbox_cat;
-					};	
+					};
 				?>
 				<br>
 				<p><ul class="horizont">
