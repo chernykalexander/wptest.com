@@ -1,2 +1,9 @@
 <?php
-// Файл отмены установки плагина
+	// если функция uninstall/delete вызвана не из WordPress, выходим
+	if( !defined( 'ABSPATH' ) && !defined( 'WP_UNINSTALL_PLUGIN' ) )
+		exit();
+
+	// удаляем параметр из таблицы параметров
+	delete_option( 'my_counter_visit_options' );
+	
+	// удаляем все другие параметры, произвольные таблицы и файлы
