@@ -1,4 +1,4 @@
-s<?php
+<?php
 /*
 Plugin Name: my-ads
 Plugin URI: http://www.robotstxt.org/
@@ -8,17 +8,12 @@ Author: Alexander Chernykh
 Author URI: http://htaccess.net.ru/
 License: GPLv2
 */
-
-
-
 // Эта функция выполняется при активации плагина во вкладке Плагины WordPress.
 // Она принимает два параметра: 
 // 1. путь к основному файлу плагина 
 // 2. функцию для выполнения после его активации.
 register_activation_hook( __FILE__ , 'my_ads_install' );
-
 function my_ads_install() {
-
 	// Функция использует глобальную переменную $wp_version,
 	// которая хранит информацию об используемой в данный момент версии WordPress
 	// и подтверждает, что она не ниже версии 3.5. Сравнение версий осуществляется
@@ -29,21 +24,13 @@ function my_ads_install() {
 		wp_die( 'Для данного плагина WordPress нужна версия 3.5 или выше.' );
 	};
 };
-
-
-
 // Функция, которая выполняется, когда плагин деактивирован.
 register_deactivation_hook( FILE , 'my_ads_deactivate()' );
-
 function my_ads_deactivate() {
 	// делаем то, что нужно
 };
-
-
-
 // Первая зацепка которая срабатывает во время загрузки скриптов/стилей на страницу админ-панели
 add_action( 'admin_enqueue_scripts', 'load_ads_script_style' );
-
 function load_ads_script_style( $hook ) {
     
     // Ставит JavaScript файлы в очередь на загрузку.
@@ -51,18 +38,12 @@ function load_ads_script_style( $hook ) {
     
     // Ставит файл CSS стилей в очередь на загрузку.
     wp_enqueue_style( 'style-my-ads', plugins_url( 'css/style.css', __FILE__ ) );
-
 }
-
-
-
 // Создаем произвольное меню для плагина
 // Сначала вызываем зацепку-действие admin_menu. 
 // Эта зацепка запускается после создания базовой структуры меню панели администратора.
 add_action( 'admin_menu', 'my_ads_create_menu' );
-
 function my_ads_create_menu() {
-
 	// Аргументы для add_menu_page
 	// pagetitle — текст, используемый для названия HTML (между тегами <title>).
 	// menu_title — текст, используемый как имя пункта меню в консоли.
@@ -71,7 +52,6 @@ function my_ads_create_menu() {
 	// function — отображает контент страницы настроек меню.
 	// icon_url — путь к произвольной иконке меню (по умолчанию images/generic.png).
 	// position — порядок отображения в меню. По умолчанию будет отображаться в конце структуры меню.
-
 	// создаем новое меню верхнего уровня
 	add_menu_page( 
 		'Базовые настройки плагина my-ads', 
@@ -81,7 +61,6 @@ function my_ads_create_menu() {
 		'my_ads_page',
 		plugins_url( '/images/ingredient_16.png', __FILE__ )
 	 );
-
 	
 	// создаем подпункты меню
 	add_submenu_page( 
@@ -92,7 +71,6 @@ function my_ads_create_menu() {
 		'my_ads_top_slug',
 		'my_ads_top_page' 
 	);
-
 	add_submenu_page( 
 		'my_ads_slug', 
 		'Управление средним блоком рекламы',
@@ -101,7 +79,6 @@ function my_ads_create_menu() {
 		'my_ads_middle_slug', 
 		'my_ads_middle_page' 
 	);
-
 	add_submenu_page( 
 		'my_ads_slug', 
 		'Управление нижним блоком рекламы',
@@ -110,14 +87,9 @@ function my_ads_create_menu() {
 		'my_ads_bottom_slug', 
 		'my_ads_bottom_page' 
 	);
-
 	// вызываем функцию для регистрации настроек
 	add_action( 'admin_init', 'my_ads_register_settings' );
-
 };
-
-
-
 function my_ads_register_settings() {
 	
 	// регистрируем настройки
@@ -127,14 +99,9 @@ function my_ads_register_settings() {
 	// Второй параметр — действительное имя параметра, которое должно быть уникальным. 
 	// Третий параметр — функция обратного вызова для очистки значений параметров.
 	register_setting( 'my_ads_group', 'my_ads_options','my_ads_sanitize_options' );
-
 };
-
-
-
 // функции очистки перед сохранением в базу данных
 function my_ads_sanitize_options( $input ) {
-
 	// sanitize_text_field() - удаляет все недействительные символы UTF-8, конвертирует
 	// единичные угловые скобки < в объекты HTML и удаляет все теги, разрывы строки
 	// и дополнительные пробелы.
@@ -142,7 +109,6 @@ function my_ads_sanitize_options( $input ) {
 	
 	return $input;
 };
-
 function my_ads_top_page() {
 ?>
 	<div class="wrap">
