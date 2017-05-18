@@ -1,4 +1,4 @@
-<?php
+s<?php
 /*
 Plugin Name: my-ads
 Plugin URI: http://www.robotstxt.org/
@@ -143,8 +143,6 @@ function my_ads_sanitize_options( $input ) {
 	return $input;
 };
 
-
-
 function my_ads_top_page() {
 ?>
 	<div class="wrap">
@@ -155,7 +153,7 @@ function my_ads_top_page() {
 			// Внутри формы необходимо определить группу настроек, которую мы задали как 
 			// my_ads_group при регистрации настроек. 
 			// Это установит связь между параметрами и их значениями.
-			settings_fields( 'my_ads-group' );
+			settings_fields( 'my_ads_group' );
 			// Прочитаем опции плагина из таблицы wp_options
 			$my_ads_options = get_option( 'my_ads_options' );
 		?>
@@ -184,9 +182,6 @@ function my_ads_top_page() {
 	</div>
 <?php
 };
-
-
-
 function my_ads_middle_page() {
 ?>
 	<div class="wrap">
@@ -197,7 +192,7 @@ function my_ads_middle_page() {
 			// Внутри формы необходимо определить группу настроек, которую мы задали как 
 			// my_ads_group при регистрации настроек. 
 			// Это установит связь между параметрами и их значениями.
-			settings_fields( 'my_ads-group' );
+			settings_fields( 'my_ads_group' );
 			// Прочитаем опции плагина из таблицы wp_options
 			$my_ads_options = get_option( 'my_ads_options' );
 		?>
@@ -225,9 +220,6 @@ function my_ads_middle_page() {
 	</div>
 <?php
 };
-
-
-
 function my_ads_bottom_page() {
 ?>
 	<div class="wrap">
@@ -238,7 +230,7 @@ function my_ads_bottom_page() {
 			// Внутри формы необходимо определить группу настроек, которую мы задали как 
 			// my_ads_group при регистрации настроек. 
 			// Это установит связь между параметрами и их значениями.
-			settings_fields( 'my_ads-group' );
+			settings_fields( 'my_ads_group' );
 			// Прочитаем опции плагина из таблицы wp_options
 			$my_ads_options = get_option( 'my_ads_options' );
 		?>
@@ -266,9 +258,6 @@ function my_ads_bottom_page() {
 	</div>
 <?php
 };
-
-
-
 function my_ads_page() {
 ?>
 	<div class="wrap">
@@ -279,7 +268,7 @@ function my_ads_page() {
 			// Внутри формы необходимо определить группу настроек, которую мы задали как 
 			// my_ads_group при регистрации настроек. 
 			// Это установит связь между параметрами и их значениями.
-			settings_fields( 'my_ads-group' );
+			settings_fields( 'my_ads_group' );
 			// Прочитаем опции плагина из таблицы wp_options
 			$my_ads_options = get_option( 'my_ads_options' );
 		?>
@@ -293,7 +282,7 @@ function my_ads_page() {
 				<label>
 					<input  type="checkbox" 
 							name="my_ads_options[option_top_visible]" 
-							<?php if ($my_ads_options[ 'option_top_visible' ] == 'on') echo "checked"; ?> 
+							<?php if ( $my_ads_options[ 'option_top_visible' ] == 'on' ) echo "checked"; ?> 
 					/>
 					Показать <strong>верхний</strong> рекламный блок
 				</label>
@@ -303,7 +292,7 @@ function my_ads_page() {
 				<label>
 					<input  type="checkbox" 
 							name="my_ads_options[option_middle_visible]" 
-							<?php if ($my_ads_options[ 'option_visible' ] == 'on') echo "checked"; ?> 
+							<?php if ( $my_ads_options[ 'option_middle_visible' ] == 'on' ) echo "checked"; ?> 
 					/>
 					Показать <strong>средний</strong> рекламный блок
 				</label>
@@ -313,7 +302,7 @@ function my_ads_page() {
 				<label>
 					<input  type="checkbox" 
 							name="my_ads_options[option_bottom_visible]" 
-							<?php if ($my_ads_options[ 'option_bottom_visible' ] == 'on') echo "checked"; ?> 
+							<?php if ( $my_ads_options[ 'option_bottom_visible' ] == 'on' ) echo "checked"; ?> 
 					/>
 					Показать <strong>нижний</strong> рекламный блок
 				</label>
@@ -331,4 +320,4 @@ function my_ads_page() {
 	</div>
 <?php
 };
-
+?>
