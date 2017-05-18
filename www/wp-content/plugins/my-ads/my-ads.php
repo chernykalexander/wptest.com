@@ -163,12 +163,16 @@ function my_ads_top_page() {
 		<table class="form-table">
 			
 			<tr valign="top">
+
 			<th scope="row">Код верхнего рекламного блока:</th>
 			<td>
 				<textarea rows="15" cols="80" name="my_ads_options[option_top]">
 					<?php echo esc_attr( $my_ads_options[ 'option_top' ] );?>
 				</textarea>
 				<p class="pre-description">Верхний рекламный блок пронизывает все страницы сайта. Распологается между шапкой и контентом.</p>				
+			</td>
+			<td align="left" valign="left" width="55%">
+				<img src="<?php echo plugins_url( 'images/ads_top.png', __FILE__ ) ?>" >
 			</td>
 			</tr>
 			
@@ -208,6 +212,9 @@ function my_ads_middle_page() {
 				</textarea>
 				<p class="pre-description">Средний рекламный блок размещается на всех страницах сайта. Распологается в сайдбаре.</p>
 			</td>
+			<td align="left" valign="left" width="55%">
+				<img src="<?php echo plugins_url( 'images/ads_middle.png', __FILE__ ) ?>" >
+			</td>
 			</tr>
 			
 		</table>
@@ -246,12 +253,80 @@ function my_ads_bottom_page() {
 				</textarea>
 				<p class="pre-description">Нижний рекламный блок добавляется только на страницах где выводится одна запись. Распологается сразу под контентом.</p>
 			</td>
+			<td align="left" valign="left" width="55%">
+				<img src="<?php echo plugins_url( 'images/ads_bottom.png', __FILE__ ) ?>" >
+			</td>
 			</tr>
 			
 		</table>
 		<p class="submit">
 			<input type="submit" class="button-primary" value="Сохранить изменения" />
 		</p>
+	</form>
+	</div>
+<?php
+};
+
+
+
+function my_ads_page() {
+?>
+	<div class="wrap">
+	<h2>Базовые настройки плагина my-ads</h2>
+	<form method="post" action="options.php">
+
+		<?php 
+			// Внутри формы необходимо определить группу настроек, которую мы задали как 
+			// my_ads_group при регистрации настроек. 
+			// Это установит связь между параметрами и их значениями.
+			settings_fields( 'my_ads-group' );
+			// Прочитаем опции плагина из таблицы wp_options
+			$my_ads_options = get_option( 'my_ads_options' );
+		?>
+		
+		<table class="form-table">
+			
+			<tr valign="top">
+			<th scope="row">Какие рекламные блоки отображать?</th>
+			<td>
+				<p>
+				<label>
+					<input  type="checkbox" 
+							name="my_ads_options[option_top_visible]" 
+							<?php if ($my_ads_options[ 'option_top_visible' ] == 'on') echo "checked"; ?> 
+					/>
+					Показать <strong>верхний</strong> рекламный блок
+				</label>
+				</p>
+
+				<p>
+				<label>
+					<input  type="checkbox" 
+							name="my_ads_options[option_middle_visible]" 
+							<?php if ($my_ads_options[ 'option_visible' ] == 'on') echo "checked"; ?> 
+					/>
+					Показать <strong>средний</strong> рекламный блок
+				</label>
+				</p>
+
+				<p>				
+				<label>
+					<input  type="checkbox" 
+							name="my_ads_options[option_bottom_visible]" 
+							<?php if ($my_ads_options[ 'option_bottom_visible' ] == 'on') echo "checked"; ?> 
+					/>
+					Показать <strong>нижний</strong> рекламный блок
+				</label>
+				</p>
+			</td>
+			</tr>
+			
+		</table>
+
+		<p class="submit">
+			<input type="submit" class="button-primary" value="Сохранить изменения" />
+		</p>
+		
 	</form>
 	</div>
 <?php
