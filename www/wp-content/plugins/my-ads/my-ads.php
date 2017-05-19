@@ -117,13 +117,15 @@ function my_ads_register_settings() {
 	// идентифицирующим все параметры в наборе.
 	// Второй параметр — действительное имя параметра, которое должно быть уникальным. 
 	// Третий параметр — функция обратного вызова для очистки значений параметров.
-	register_setting( 'my_ads_group', 'my_ads_options','my_ads_sanitize_options' );
+	register_setting( 'my_ads_group', 'my_ads_options', 'my_ads_sanitize_options' );
+	
 };
 
 
 
 // функции очистки перед сохранением в базу данных
 function my_ads_sanitize_options( $input ) {
+	
 	// sanitize_text_field() - удаляет все недействительные символы UTF-8, конвертирует
 	// единичные угловые скобки < в объекты HTML и удаляет все теги, разрывы строки
 	// и дополнительные пробелы.
@@ -140,23 +142,15 @@ function my_ads_top_page() {
 	<h2>Управление верхним блоком рекламы my_ads</h2>
 	<form method="post" action="options.php">
 
-		<?php 
-			// Внутри формы необходимо определить группу настроек, которую мы задали как 
-			// my_ads_group при регистрации настроек. 
-			// Это установит связь между параметрами и их значениями.
-			settings_fields( 'my_ads_group' );
-			// Прочитаем опции плагина из таблицы wp_options
-			$my_ads_options = get_option( 'my_ads_options' );
-		?>
-		
+		<?php wp_nonce_field( 'update-options' ); ?>
+
 		<table class="form-table">
 			
 			<tr valign="top">
-
 			<th scope="row">Код верхнего рекламного блока:</th>
 			<td>
-				<textarea rows="15" cols="80" name="my_ads_options[option_top]">
-					<?php echo esc_attr( $my_ads_options[ 'option_top' ] );?>
+				<textarea rows="15" cols="80" name="my_ads_top">
+					<?php echo get_option( 'my_ads_top' ); ?>
 				</textarea>
 				<p class="pre-description">Верхний рекламный блок пронизывает все страницы сайта. Распологается между шапкой и контентом.</p>				
 			</td>
@@ -166,6 +160,10 @@ function my_ads_top_page() {
 			</tr>
 			
 		</table>
+		
+		<input type="hidden" name="action" value="update" />
+		<input type="hidden" name="page_options" value="my_ads_top" />
+
 		<p class="submit">
 			<input type="submit" class="button-primary" value="Сохранить изменения" />
 		</p>
