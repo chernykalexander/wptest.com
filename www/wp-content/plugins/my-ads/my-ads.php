@@ -134,6 +134,47 @@ function my_ads_sanitize_options( $input ) {
 	return $input;
 };
 
+class TAdsTopOne {
+
+    public static $flag_top = false;
+
+    function __construct() {
+        add_action( 'pre_get_search_form', 'ads_display_top' );
+    }
+
+    public function ads_display_top() {
+        if ( ! self::$flag_top ) {
+        	echo get_option( 'my_ads_top' );
+        }
+        self::$flag_top = true;
+    }
+}
+
+
+$AdsTopOne = new TAdsTopOne();
+$AdsTopOne->ads_display_top();
+
+
+
+class TAdsOne {
+
+    public static $flag_top = false;
+
+ };
+
+add_action( 'pre_get_search_form', 'ads_display_top' );
+
+// Выводим рекламу под шапкой сайта на всех страницах
+function ads_display_top() {
+	// 
+	// echo "Hello, world!";
+	// echo "<pre>"; print_r( debug_backtrace() ); echo "</pre>";
+	if ( ! TAdsOne::$flag_top ) {
+		echo get_option( 'my_ads_top' );
+	};
+	TAdsOne::$flag_top = true;
+};
+
 
 
 function my_ads_top_page() {
@@ -180,22 +221,15 @@ function my_ads_middle_page() {
 	<h2>Управление средним блоком рекламы my_ads</h2>
 	<form method="post" action="options.php">
 
-		<?php 
-			// Внутри формы необходимо определить группу настроек, которую мы задали как 
-			// my_ads_group при регистрации настроек. 
-			// Это установит связь между параметрами и их значениями.
-			settings_fields( 'my_ads_group' );
-			// Прочитаем опции плагина из таблицы wp_options
-			$my_ads_options = get_option( 'my_ads_options' );
-		?>
+		<?php wp_nonce_field( 'update-options' ); ?>
 		
 		<table class="form-table">
 			
 			<tr valign="top">
 			<th scope="row">Код среднего рекламного блока:</th>
 			<td>
-				<textarea rows="15" cols="80" name="my_ads_options[option_middle]">
-					<?php echo esc_attr( $my_ads_options[ 'option_middle' ] );?>
+				<textarea rows="15" cols="80" name="my_ads_middle">
+					<?php echo get_option( 'my_ads_middle' ); ?>
 				</textarea>
 				<p class="pre-description">Средний рекламный блок размещается на всех страницах сайта. Распологается в сайдбаре.</p>
 			</td>
@@ -205,6 +239,10 @@ function my_ads_middle_page() {
 			</tr>
 			
 		</table>
+
+		<input type="hidden" name="action" value="update" />
+		<input type="hidden" name="page_options" value="my_ads_middle" />
+
 		<p class="submit">
 			<input type="submit" class="button-primary" value="Сохранить изменения" />
 		</p>
@@ -221,22 +259,15 @@ function my_ads_bottom_page() {
 	<h2>Управление нижним блоком рекламы my_ads</h2>
 	<form method="post" action="options.php">
 
-		<?php 
-			// Внутри формы необходимо определить группу настроек, которую мы задали как 
-			// my_ads_group при регистрации настроек. 
-			// Это установит связь между параметрами и их значениями.
-			settings_fields( 'my_ads_group' );
-			// Прочитаем опции плагина из таблицы wp_options
-			$my_ads_options = get_option( 'my_ads_options' );
-		?>
+		<?php wp_nonce_field( 'update-options' ); ?>
 		
 		<table class="form-table">
 			
 			<tr valign="top">
 			<th scope="row">Код нижнего рекламного блока:</th>
 			<td>
-				<textarea rows="15" cols="80" name="my_ads_options[option_bottom]">
-					<?php echo esc_attr( $my_ads_options[ 'option_bottom' ] );?>
+				<textarea rows="15" cols="80" name="my_ads_bottom">
+					<?php echo get_option( 'my_ads_bottom' ); ?>
 				</textarea>
 				<p class="pre-description">Нижний рекламный блок добавляется только на страницах где выводится одна запись. Распологается сразу под контентом.</p>
 			</td>
@@ -246,6 +277,10 @@ function my_ads_bottom_page() {
 			</tr>
 			
 		</table>
+
+		<input type="hidden" name="action" value="update" />
+		<input type="hidden" name="page_options" value="my_ads_bottom" />
+
 		<p class="submit">
 			<input type="submit" class="button-primary" value="Сохранить изменения" />
 		</p>
