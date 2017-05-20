@@ -134,28 +134,11 @@ function my_ads_sanitize_options( $input ) {
 	return $input;
 };
 
-class TAdsTopOne {
-
-    public static $flag_top = false;
-
-    function __construct() {
-        add_action( 'pre_get_search_form', 'ads_display_top' );
-    }
-
-    public function ads_display_top() {
-        if ( ! self::$flag_top ) {
-        	echo get_option( 'my_ads_top' );
-        }
-        self::$flag_top = true;
-    }
-}
 
 
-$AdsTopOne = new TAdsTopOne();
-$AdsTopOne->ads_display_top();
-
-
-
+// Поскольку мы цепляемся к хуку pre_get_search_form который встечается дважды на странице
+// Првый раз в шапке, второй в подвале. Чтобы не выводить рекламный код дважды
+// используем статическую переменную класса в качестве флага
 class TAdsOne {
 
     public static $flag_top = false;
@@ -166,12 +149,21 @@ add_action( 'pre_get_search_form', 'ads_display_top' );
 
 // Выводим рекламу под шапкой сайта на всех страницах
 function ads_display_top() {
-	// 
-	// echo "Hello, world!";
-	// echo "<pre>"; print_r( debug_backtrace() ); echo "</pre>";
-	if ( ! TAdsOne::$flag_top ) {
-		echo get_option( 'my_ads_top' );
+	
+	// Проверяем галочку (Показывать верхний рекламный блок)
+	$check_top = get_option( 'my_ads_options' );
+	if ( $check_top[ 'option_top_visible' ] != 'on' ) {
+		return;
 	};
+
+	// Если верхняя реклама уже выводилась
+	// то второй раз выводить ее не нужно
+	if ( ! TAdsOne::$flag_top ) {
+		echo '<div align="center">';
+		echo get_option( 'my_ads_top' );
+		echo '</div>';
+	};
+
 	TAdsOne::$flag_top = true;
 };
 
