@@ -385,7 +385,8 @@ add_action( 'widgets_init', 'my_ads_register_widgets' );
 
 function my_ads_register_widgets() {
 
-	register_widget( 'prowp_widget' );
+	// Перечесляем список виджетов которые нужно зарегистрировать
+	register_widget( 'my_ads_widget' );
 
 };
 
@@ -398,62 +399,128 @@ function my_ads_register_widgets() {
 // класс WP_Widget, создав новый класс с уникальным именем:
 class my_ads_widget extends WP_Widget {
 
+
 	// Теперь добавим первую функцию, имя которой должно совпадать с уникальным
 	// именем класса. Функция такого типа называется конструктор (constructor):
 	function my_ads_widget() {
+		
 		$widget_ops = array (
+			// Имя класса — это класс CSS, который будет добавлен к тегу HTML, включающему в себя виджет
+			// при его отображении. В зависимости от темы класс CSS может оказаться в <div>,
+			// <aside>, <li> или каком-либо еще HTML-теге.
 			'classname' => 'my_ads_widget_class',
-			'description' => 'Описание виджета. Реклама в сайтбаре' );
-		$this->WP_Widget( 'prowp_widget', 'Bio Widget', $widget_ops );
+
+			// Описание виджета отображается на консоли виджета ниже имени виджета.
+			'description' => 'Средний рекламный блок' 
+		);
+
+		// Затем данные параметры передаются WP_Widget. 
+		$this->WP_Widget( 'my_ads_widget', 'Bio Widget', $widget_ops );
 	}
 
-	// Имя класса — это класс CSS, который будет добавлен к тегу HTML, включающему в себя виджет
-	// при его отображении. В зависимости от темы класс CSS может оказаться в <div>,
-	// <aside>, <li> или каком-либо еще HTML-теге. Вы также задаете описание виджета.
-	// Оно отображается на консоли виджета ниже имени виджета. Затем данные параметры
-	// передаются WP_Widget. 
 
+	// создаем форму настроек виджета
 	// Теперь создадим функцию для встраивания формы настроек виджета. Настройки
 	// располагаются на администраторской странице виджета, раскрываясь для каждого
 	// виджета, перечисленного на боковой панели. Класс виджета делает процесс крайне
 	// простым, как показывает код ниже:
 	function form( $instance ) {
 		
+		// Первое, что нужно сделать, — это определить значения виджета по умолчанию.
 		$defaults = array(
-			'title' => 'My Bio',
-			'name' => 'Michael Myers',
-			'bio' => '' );
+			'ads_title' => 'Реклама',
+			'ads_flag' => 'on',
+			'ads_code' => '' );
 		
+		// Теперь задействуем значения объекта, то есть настройки виджета. 
+		// Если виджет был только что добавлен на боковую панель, 
+		// никаких настроек еще не сохранено, поэтому значения будут пустыми. 		
 		$instance = wp_parse_args( (array) $instance, $defaults );
-		$title = $instance[ 'title' ];
-		$name = $instance[ 'name' ];
-		$bio = $instance[ 'bio' ];
-		
+		$ads_title = $instance[ 'ads_title' ];
+		$ads_flag = $instance[ 'ads_flag' ];
+		$ads_code = $instance[ 'ads_code' ];
+				
+		// Наконец, отображаем три поля формы для настроек виджета:
+		// Вам не нужны теги <form> или кнопка подтверждения: это сделает для вас класс виджета.
 		?>
 
-		<p>Title:
+		<p>Заголовок:
 			<input class="widefat"
-			name="<?php echo $this->get_field_name( 'title' ); ?>"
-			type="text" value="<?php echo esc_attr( $title ); ?>" /></p>
+			name="<?php echo $this->get_field_name( 'ads_title' ); ?>"
+			type="text" value="<?php echo esc_attr( $ads_title ); ?>" /></p>
 
-		<p>Name:
+		<p>Показывать рекламу:
 			<input class="widefat"
-			name="<?php echo $this->get_field_name( 'name' ); ?>"
-			type="text" value="<?php echo esc_attr( $name ); ?>" /></p>
+			name="<?php echo $this->get_field_name( 'ads_flag' ); ?>"			
+			type="text" value="<?php echo esc_attr( $ads_flag ); ?>" /></p>
 		
-		<p>Bio:
+		<p>Код:
 			<textarea class="widefat"
-			name="<?php echo $this->get_field_name( 'bio' ); ?>" >
-			<?php echo esc_textarea( $bio ); ?></textareax></p>
+			name="<?php echo $this->get_field_name( 'ads_code' ); ?>" >
+			<?php echo esc_textarea( $ads_code ); ?></textareax></p>
 		
 		<?php
+	
 	}
-	// Первое, что нужно сделать, — это определить значения виджета по умолчанию.
-	// На тот случай, если пользователь не заполняет эти настройки, вы можете приписать
-	// им любые предустановленные значения. В данном примере мы задаем название по
-	// умолчанию My Bio, а имя по умолчанию Майкл Майерс (Michael Myers). Теперь
-	// задействуем значения объекта, то есть настройки виджета. Если виджет был только
-	// что добавлен на боковую панель, никаких настроек еще не сохранено, поэтому значения
-	// будут пустыми. Наконец, отображаем три поля формы для настроек виджета:
-	// название, имя и биография. Первые два параметра используют поля для ввода
-	// текста, а биография (bio) — поле области текста. Обратите внимание, что вам не
+		
+
+	// Затем нужно сохранить настройки виджета, используя
+	// функцию класса виджета update():
+	function update( $new_instance, $old_instance ) {
+
+		$instance = $old_instance;
+
+		$instance[ 'ads_title' ] = sanitize_text_field( $new_instance[ 'ads_title' ] );
+		$instance[ 'ads_flag' ] = sanitize_text_field( $new_instance[ 'ads_flag' ] );
+		// $instance[ 'ads_code' ] = sanitize_text_field( $new_instance[ 'ads_code' ] );
+		$instance[ 'ads_code' ] = $new_instance[ 'ads_code' ];
+		
+		return $instance;
+
+	}
+
+
+	// Последняя функция в классе занимается отображением виджета:
+	function widget( $args, $instance ) {
+
+		// Первое, что мы делаем, — извлекаем параметр $args. Эта переменная хранит некоторые
+		// глобальные значения темы, такие как $before_widget и $after_widget.
+		// Эти переменные могут использоваться разработчиками темы для определения
+		// того, какой код будет обрамлять виджет, например произвольный тег <div>.	
+		extract( $args );
+
+		// После извлечения параметра $args отображаем переменную $before_widget.	
+		// $before_title и $after_title также задаются в этой переменной. Это полезно
+		// для передачи произвольных тегов HTML для включения между ними названия
+		// виджета.
+		echo $before_widget;
+		
+		$ads_title = apply_filters( 'widget_title', $instance[ 'ads_title' ] );
+		$ads_flag = ( empty( $instance[ 'ads_flag' ] ) ) ? '&nbsp;' : $instance[ 'ads_flag' ];
+		$ads_code = ( empty( $instance[ 'ads_code' ] ) ) ? '&nbsp;' : $instance[ 'ads_code' ];
+
+		// Теперь отобразим значения виджета. Название показывается первым и помещается
+		// между $before_title и $after_title. Затем покажем имя и биографию. Не забывайте
+		// применять исключение для значений виджета по соображениям безопасности.		
+		if ( !empty( $ads_title ) ) { 
+			echo $before_title . esc_html( $ads_title ) . $after_title; 
+		};
+		
+		echo '<p>ads_name: ' . esc_html( $ads_name ) . '</p>';
+		echo '<p>ads_code: ' . esc_html( $ads_code ) . '</p>';
+		
+		// Наконец, отобразим значение $after_widget.
+		echo $after_widget;
+		
+	}
+
+
+	// Готово! Вы только что создали пользовательский виджет для плагина, используя
+	// класс виджета в WordPress. Не забывайте, что, используя новый класс виджета,
+};
+	
+	
+
+
+	
+	
