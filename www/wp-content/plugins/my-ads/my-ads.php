@@ -391,8 +391,6 @@ function my_ads_register_widgets() {
 };
 
 
-
-
 // ----------------------------------------------------------------------------------------------
 
 // Для начала необходимо расширить предустановленный
@@ -415,7 +413,7 @@ class my_ads_widget extends WP_Widget {
 		);
 
 		// Затем данные параметры передаются WP_Widget. 
-		$this->WP_Widget( 'my_ads_widget', 'Bio Widget', $widget_ops );
+		$this->WP_Widget( 'my_ads', 'Виджет рекламы', $widget_ops );
 	}
 
 
@@ -472,8 +470,8 @@ class my_ads_widget extends WP_Widget {
 
 		$instance[ 'ads_title' ] = sanitize_text_field( $new_instance[ 'ads_title' ] );
 		$instance[ 'ads_flag' ] = sanitize_text_field( $new_instance[ 'ads_flag' ] );
-		// $instance[ 'ads_code' ] = sanitize_text_field( $new_instance[ 'ads_code' ] );
-		$instance[ 'ads_code' ] = $new_instance[ 'ads_code' ];
+		$instance[ 'ads_code' ] = sanitize_text_field( $new_instance[ 'ads_code' ] );
+		// $instance[ 'ads_code' ] = $new_instance[ 'ads_code' ];
 		
 		return $instance;
 
@@ -503,6 +501,7 @@ class my_ads_widget extends WP_Widget {
 		// между $before_title и $after_title. Затем покажем имя и биографию. Не забывайте
 		// применять исключение для значений виджета по соображениям безопасности.		
 		if ( !empty( $ads_title ) ) { 
+			// echo $before_title . 'Test test test' . $after_title; 
 			echo $before_title . esc_html( $ads_title ) . $after_title; 
 		};
 		
@@ -518,9 +517,7 @@ class my_ads_widget extends WP_Widget {
 	// Готово! Вы только что создали пользовательский виджет для плагина, используя
 	// класс виджета в WordPress. Не забывайте, что, используя новый класс виджета,
 };
-	
-	
 
 
-	
-	
+
+include_once 'bio.php';
