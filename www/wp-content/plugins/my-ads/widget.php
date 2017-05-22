@@ -48,10 +48,14 @@ class ads_widget extends WP_Widget {
 	// простым, как показывает код ниже:
 	function form( $instance ) {
 		
+		// Извлекаем массив опций виджета
+		// Что прописано в опциях плагина то будет поумолчанию в виджете
+		$my_ads_options = get_option( 'my_ads_options' );
+
 		// Первое, что нужно сделать, — это определить значения виджета по умолчанию.
 		$defaults = array (
 			'title_ads' => 'My Bio',
-			'flag_ads' => 'Michael Myers',
+			'flag_ads' => $my_ads_options[ 'option_middle_visible' ],
 			'code_ads' => '' 
 		);
 
@@ -67,18 +71,20 @@ class ads_widget extends WP_Widget {
 		// Вам не нужны теги <form> или кнопка подтверждения: это сделает для вас класс виджета.
 		?>
 		<p>Заголовок:
-			<input  class="widefat" flag_ads="<?php echo $this->get_field_name( 'title_ads' ); ?>" 
+			<input  class="widefat" 
+					name="<?php echo $this->get_field_name( 'title_ads' ); ?>" 
 					type="text"
 					value="<?php echo esc_attr( $title_ads ); ?>" /></p>
 		
 		<p>Показать/Скрыть:
-			<input  class="widefat" flag_ads="<?php echo $this->get_field_name( 'flag_ads' ); ?>"
-					type="text"
-					value="<?php echo esc_attr( $flag_ads ); ?>" /></p>
+			<input  class="widefat" 
+					name="<?php echo $this->get_field_name( 'flag_ads' ); ?>"
+					type="checkbox"
+					value="on" <?php if ( $flag_ads == 'on' ) echo 'checked'; ?> /> </p>
 		
 		<p>Код рекламы:
 			<textarea   class="widefat"
-						flag_ads="<?php echo $this->get_field_name( 'code_ads' ); ?>">
+						name="<?php echo $this->get_field_name( 'code_ads' ); ?>">
 						<?php echo esc_textarea( $code_ads ); ?></textarea></p>
 		<?php
 	}
@@ -91,7 +97,10 @@ class ads_widget extends WP_Widget {
 		$instance = $old_instance;
 		
 		$instance[ 'title_ads' ] = sanitize_text_field( $new_instance[ 'title_ads' ] );
+		
+		// Записываем флажок не только в опции виджета но и плагина
 		$instance[ 'flag_ads' ] = sanitize_text_field( $new_instance[ 'flag_ads' ] );
+		
 		$instance[ 'code_ads' ] = sanitize_text_field( $new_instance[ 'code_ads' ] );
 		
 		return $instance;
@@ -116,7 +125,8 @@ class ads_widget extends WP_Widget {
 		echo $before_widget;
 		
 		$title_ads = apply_filters( 'widget_title', $instance[ 'title_ads' ] );
-		$flag_ads = ( empty( $instance[ 'flag_ads' ] ) ) ? '&nbsp;' : $instance[ 'flag_ads' ];
+		// $flag_ads = ( empty( $instance[ 'flag_ads' ] ) ) ? '&nbsp;' : $instance[ 'flag_ads' ];
+		$flag_ads = ( empty( $instance[ 'flag_ads' ] ) ) ? false : true;
 		$code_ads = ( empty( $instance[ 'code_ads' ] ) ) ? '&nbsp;' : $instance[ 'code_ads' ];
 		
 		// Теперь отобразим значения виджета. Название показывается первым и помещается
@@ -126,8 +136,10 @@ class ads_widget extends WP_Widget {
 			echo $before_title . esc_html( $title_ads ) . $after_title; 
 		};
 		
-		echo '<p>Показать/Скрыть: ' . esc_html( $flag_ads ) . '</p>';
-		echo '<p>Код рекламы: ' . esc_html( $code_ads ) . '</p>';
+		// echo '<p>Показать/Скрыть: ' . esc_html( $flag_ads ) . '</p>';
+		if ( $flag_ads ) {
+			echo '<p>Код рекламы: ' . esc_html( $code_ads ) . '</p>';
+		};
 		
 		// Наконец, отобразим значение $after_widget.
 		echo $after_widget;
