@@ -15,9 +15,9 @@ License: GPLv2
 // Она принимает два параметра: 
 // 1. путь к основному файлу плагина 
 // 2. функцию для выполнения после его активации.
-register_activation_hook( __FILE__ , 'my_ads_install' );
+register_activation_hook( __FILE__ , 'my_like_install' );
 
-function my_ads_install() {
+function my_like_install() {
 	// Функция использует глобальную переменную $wp_version,
 	// которая хранит информацию об используемой в данный момент версии WordPress
 	// и подтверждает, что она не ниже версии 3.5. Сравнение версий осуществляется
@@ -32,25 +32,27 @@ function my_ads_install() {
 
 
 // Функция, которая выполняется, когда плагин деактивирован.
-register_deactivation_hook( FILE , 'my_ads_deactivate()' );
+register_deactivation_hook( FILE , 'my_like_deactivate' );
 
-function my_ads_deactivate() {
+function my_like_deactivate() {
 	// делаем то, что нужно
+	// удаляем параметр из таблицы параметров
+	delete_option( 'my_like_options' );
 };
 
 
 
 // Первая зацепка которая срабатывает во время загрузки скриптов/стилей на страницу админ-панели
-add_action( 'admin_enqueue_scripts', 'load_ads_script_style' );
+add_action( 'admin_enqueue_scripts', 'load_like_script_style' );
 
-function load_ads_script_style( $hook ) {
+function load_like_script_style( $hook ) {
     
     // Ставит JavaScript файлы в очередь на загрузку.
     // wp_enqueue_script( 'script-jquery', plugins_url( 'js/jquery-3.2.1.min.js', __FILE__ ) );
     
     // Ставит файл CSS стилей в очередь на загрузку.
-    // wp_enqueue_style( 'style-my-ads', plugins_url( 'css/style.css', __FILE__ ) );
-}
+    // wp_enqueue_style( 'style-my-like', plugins_url( 'css/style.css', __FILE__ ) );
+};
 
 
 
@@ -104,37 +106,61 @@ function my_like_page() {
 		<?php $my_like_options = get_option( 'my_like_options' ); ?>
 		
 		<table class="form-table">
+			
 			<tr valign="top">
 			<th scope="row">Для каких рубрик можно ставить лайки?</th>
 			<td>
 				<?php
-					$categories = get_categories();
-					foreach ($categories as $category) {
+					
+				$categories = get_categories();
+				$list_cat = '';
+				
+				foreach ($categories as $category) {
 
-						if ($my_signature_options[ 'option_cat_' . $category->cat_ID ] == 'on') {
-							$db_class = 'class="db_class" ';
-							$db_checked = 'checked ';
-						} else {
-							$db_class = '';
-							$db_checked = '';
-						};
-
-						$checkbox_cat = '';
-						$checkbox_cat .= '<label><input type="checkbox" ';
-						$checkbox_cat .= $db_class;
-						$checkbox_cat .= 'name="my_signature_options[option_cat_' . $category->cat_ID . ']" ';
-						$checkbox_cat .= $db_checked;
-						$checkbox_cat .= '/>' . $category->cat_name . '</label><br> ';
-						
-						echo $checkbox_cat;
-					};
+					$checkbox_cat = '';
+					$checkbox_cat .= '<label><input type="checkbox" ';
+					$checkbox_cat .= 'name="my_like_options[cat_' . $category->cat_ID . ']" ';
+					$checkbox_cat .= '/>' . $category->cat_name . '</label><br> ';
+					
+					$list_cat .= $checkbox_cat;
+				};
+					
+				echo $list_cat;
 				?>				
 			</td>
 			</tr>
+
+			<hr>
+
+			<tr valign="top">
+			<th scope="row">Каким тегам нужен лайк?</th>
+			<td>
+				<?php
+					
+				$tags = get_tags();
+				$list_tag = '';
+				
+				foreach ($tags as $tag) {
+
+					$checkbox_tag = '';
+					$checkbox_tag .= '<label><input type="checkbox" ';
+					$checkbox_tag .= 'name="my_like_options[tag_' . $tag->term_id . ']" ';
+					$checkbox_tag .= '/>' . $tag->name . '</label><br> ';
+					
+					$list_tag .= $checkbox_tag;
+				};
+					
+				echo $list_tag;
+				?>				
+			</td>
+			</tr>
+
 		</table>
+		
 		<p class="submit">
 			<input type="submit" class="button-primary" value="Сохранить изменения" />
 		</p>
+
 	</form>
 	</div>
 <?php
