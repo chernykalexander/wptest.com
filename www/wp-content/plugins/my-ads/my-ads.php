@@ -169,6 +169,25 @@ function ads_display_top() {
 
 
 
+add_action( 'comment_form_before', 'ads_display_bottom' );
+
+// Выводим рекламу под шапкой сайта на всех страницах
+function ads_display_bottom() {
+	
+	// Проверяем галочку (Показывать верхний рекламный блок)
+	$check_top = get_option( 'my_ads_options' );
+	if ( $check_top[ 'option_bottom_visible' ] != 'on' ) {
+		return;
+	};
+
+	echo '<div align="center">';
+	echo get_option( 'my_ads_bottom' );
+	echo '</div>';
+
+};
+
+
+
 function my_ads_top_page() {
 ?>
 	<div class="wrap">

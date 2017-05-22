@@ -51,12 +51,14 @@ class ads_widget extends WP_Widget {
 		// Извлекаем массив опций виджета
 		// Что прописано в опциях плагина то будет поумолчанию в виджете
 		$my_ads_options = get_option( 'my_ads_options' );
+		
+		$my_ads_middle = get_option( 'my_ads_middle' );
 
 		// Первое, что нужно сделать, — это определить значения виджета по умолчанию.
 		$defaults = array (
-			'title_ads' => 'My Bio',
+			'title_ads' => 'Реклама',
 			'flag_ads' => $my_ads_options[ 'option_middle_visible' ],
-			'code_ads' => '' 
+			'code_ads' => $my_ads_middle
 		);
 
 		// Теперь задействуем значения объекта, то есть настройки виджета. 
@@ -84,8 +86,9 @@ class ads_widget extends WP_Widget {
 		
 		<p>Код рекламы:
 			<textarea   class="widefat"
+						rows="10"
 						name="<?php echo $this->get_field_name( 'code_ads' ); ?>">
-						<?php echo esc_textarea( $code_ads ); ?></textarea></p>
+						<?php echo $code_ads; ?></textarea></p>
 		<?php
 	}
 
@@ -100,8 +103,14 @@ class ads_widget extends WP_Widget {
 		
 		// Записываем флажок не только в опции виджета но и плагина
 		$instance[ 'flag_ads' ] = sanitize_text_field( $new_instance[ 'flag_ads' ] );
+
+		// Синхронизация. Флажок показывать/скрывать средний рекламный блок записываем в опции для плагина
+		$tmp_options_plugin = get_option( 'my_ads_options' );
+		$tmp_options_plugin[ 'option_middle_visible' ] = $instance[ 'flag_ads' ];
+		update_option( 'my_ads_options', $tmp_options_plugin );
 		
-		$instance[ 'code_ads' ] = sanitize_text_field( $new_instance[ 'code_ads' ] );
+		// $instance[ 'code_ads' ] = sanitize_text_field( $new_instance[ 'code_ads' ] );
+		$instance[ 'code_ads' ] = $new_instance[ 'code_ads' ];
 		
 		return $instance;
 
@@ -109,7 +118,7 @@ class ads_widget extends WP_Widget {
 
 
 
-	// отображаем виджет
+	// отображаем виджет на сайте
 	function widget( $args, $instance ) {
 		
 		// Извлекаем параметр $args. Эта переменная хранит некоторые
@@ -138,7 +147,7 @@ class ads_widget extends WP_Widget {
 		
 		// echo '<p>Показать/Скрыть: ' . esc_html( $flag_ads ) . '</p>';
 		if ( $flag_ads ) {
-			echo '<p>Код рекламы: ' . esc_html( $code_ads ) . '</p>';
+			echo '<p>Блок рекламы: ' . $code_ads  . '</p>';
 		};
 		
 		// Наконец, отобразим значение $after_widget.
