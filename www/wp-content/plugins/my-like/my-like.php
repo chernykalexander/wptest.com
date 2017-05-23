@@ -141,17 +141,17 @@ function my_like_page() {
 				};
 					
 				echo $list_cat;
-				?>				
+				?>
+
 			</td>
 			</tr>
 
 			<tr><th></th>
 			<td>
 				<input type="button" id="cat_selectall" value="Выделить все" />
-				<!-- <button id="cat_selectall">Выделить все</button> -->
-				<button id="cat_cancel">Отменить выделение</button>
-				<button id="cat_invert">Инвертировать</button>
-				<button id="cat_restore">Восстановить</button>
+				<input type="button" id="cat_cancel" value="Отменить выделение" />
+				<input type="button" id="cat_invert" value="Инвертировать" />
+				<input type="button" id="cat_restore" value="Восстановить" />
 			</td>
 			</tr>
 

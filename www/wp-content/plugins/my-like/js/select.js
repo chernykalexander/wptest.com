@@ -7,44 +7,52 @@
 	
 	$(document).ready(function() {
 		
+		// Выделить все
 		$( '#cat_selectall' ).click( function() {
-			console.log( 'Hello, world!' );
+			
+			// проверяет, соответствие хотя бы одного div-элемента заданному селектору
+			// if (  $( "input" ).is( '[name^="my_like_options[cat_"]' ) ) {
+			// 	console.log( 'Test' );
+			// };
+
+			$( '[name^="my_like_options[cat_"]' ).prop( "checked", true );		
+
 		});
 
 
-		// $( '#cat_selectall' ).toggle(function(){
-		//     $( '[name^=my_like_options[cat_]' ).attr( 'checked', 'checked' );
-		//     $( this ).val( 'uncheck all' );
-		// },function(){
-		//     $('input:checkbox').removeAttr('checked');
-		//     $(this).val('check all');        
-		// })
+		// Отменить выделение
+		$( '#cat_cancel' ).click( function() {
+			
+			$( '[name^="my_like_options[cat_"]' ).prop( "checked", false );
+
+		});
 
 
+		// Инвертировать
+		$( '#cat_invert' ).click( function() {
+			
+			$( '[name^="my_like_options[cat_"]' ).each( function() {
+				
+				if ( this.checked ) {
+					$( this ).prop( "checked", false );
+				} else {
+					$( this ).prop( "checked", true );
+				};
 
-		// //add buttons
-		// $(".categorydiv").each( function() {
+			} );
+
+		});
+
+
+		// Восстановить
+		$( '#cat_restore' ).click( function() {
 			
-		// 	var tax_id = $(this).attr('id');
-		// 	var tax_name = tax_id.replace("taxonomy-", "");
-		// 	$('#'+ tax_name +'-adder')
-		// 		.prepend('<p><input type="button" data-tsl-tax="'+ tax_name +'" class="button tsl-select" value="'+ labels.select +'"><input type="button" data-tsl-tax="'+ tax_name +'" class="button tsl-deselect" value="'+ labels.deselect +'"></p>');
+			$( '[name^="my_like_options[cat_"]' ).each( function() {
+				// 
+			};
 			
-		// });
-		
-		// //add trigger to Select all
-		// $(".tsl-select").click( function() {
-		// 	var tax = $(this).attr('data-tsl-tax');
-		// 	$('#' + tax + 'checklist').find("input[type='checkbox']").prop('checked', true);
-			
-		// });
-		
-		// //add trigger to deSelect all
-		// $(".tsl-deselect").click( function() {
-		// 	var tax = $(this).attr('data-tsl-tax');
-		// 	$('#' + tax + 'checklist').find("input[type='checkbox']").prop('checked', false);
-			
-		// });
+		} );
+
 		
 	
 	}); // document ready end
