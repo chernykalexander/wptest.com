@@ -147,7 +147,8 @@ function my_like_page() {
 
 			<tr><th></th>
 			<td>
-				<button id="cat_selectall">Выделить все</button>
+				<input type="button" id="cat_selectall" value="Выделить все" />
+				<!-- <button id="cat_selectall">Выделить все</button> -->
 				<button id="cat_cancel">Отменить выделение</button>
 				<button id="cat_invert">Инвертировать</button>
 				<button id="cat_restore">Восстановить</button>
