@@ -34,7 +34,7 @@ function my_signature_install() {
 
 
 // Функция, которая выполняется, когда плагин деактивирован.
-register_deactivation_hook( FILE , 'my_signature_deactivate()' );
+register_deactivation_hook( __FILE__ , 'my_signature_deactivate()' );
 
 function my_signature_deactivate() {
 	// делаем то, что нужно

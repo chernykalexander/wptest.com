@@ -32,7 +32,7 @@ function my_ads_install() {
 
 
 // Функция, которая выполняется, когда плагин деактивирован.
-register_deactivation_hook( FILE , 'my_ads_deactivate()' );
+register_deactivation_hook( __FILE__ , 'my_ads_deactivate()' );
 
 function my_ads_deactivate() {
 	// делаем то, что нужно

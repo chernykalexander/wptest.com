@@ -32,7 +32,7 @@ function my_like_install() {
 
 
 // Функция, которая выполняется, когда плагин деактивирован.
-register_deactivation_hook( FILE , 'my_like_deactivate' );
+register_deactivation_hook( __FILE__ , 'my_like_deactivate' );
 
 function my_like_deactivate() {
 	// делаем то, что нужно
@@ -48,7 +48,10 @@ add_action( 'admin_enqueue_scripts', 'load_like_script_style' );
 function load_like_script_style( $hook ) {
     
     // Ставит JavaScript файлы в очередь на загрузку.
-    // wp_enqueue_script( 'script-jquery', plugins_url( 'js/jquery-3.2.1.min.js', __FILE__ ) );
+    wp_enqueue_script( 'script-jquery', plugins_url( 'js/jquery-3.2.1.min.js', __FILE__ ) );
+    
+    // Подключаем скрипт с кнопками: Выделить все, Отменить, Инвертировать, Восстановить
+    wp_enqueue_script( 'script-select', plugins_url( 'js/select.js', __FILE__ ) );
     
     // Ставит файл CSS стилей в очередь на загрузку.
     // wp_enqueue_style( 'style-my-like', plugins_url( 'css/style.css', __FILE__ ) );
@@ -114,12 +117,24 @@ function my_like_page() {
 					
 				$categories = get_categories();
 				$list_cat = '';
+				$db_class = '';
+				$db_checked = '';
 				
 				foreach ($categories as $category) {
 
+					if ( $my_like_options[ 'cat_' . $category->cat_ID ] == 'on' ) {
+						$db_class = 'class="db_cat" ';
+						$db_checked = 'checked ';
+					} else {
+						$db_class = '';
+						$db_checked = '';
+					};
+
 					$checkbox_cat = '';
 					$checkbox_cat .= '<label><input type="checkbox" ';
+					$checkbox_cat .= $db_class;
 					$checkbox_cat .= 'name="my_like_options[cat_' . $category->cat_ID . ']" ';
+					$checkbox_cat .= $db_checked;
 					$checkbox_cat .= '/>' . $category->cat_name . '</label><br> ';
 					
 					$list_cat .= $checkbox_cat;
@@ -127,6 +142,15 @@ function my_like_page() {
 					
 				echo $list_cat;
 				?>				
+			</td>
+			</tr>
+
+			<tr><th></th>
+			<td>
+				<button id="cat_selectall">Выделить все</button>
+				<button id="cat_cancel">Отменить выделение</button>
+				<button id="cat_invert">Инвертировать</button>
+				<button id="cat_restore">Восстановить</button>
 			</td>
 			</tr>
 
@@ -139,12 +163,24 @@ function my_like_page() {
 					
 				$tags = get_tags();
 				$list_tag = '';
+				$db_class = '';
+				$db_checked = '';
 				
 				foreach ($tags as $tag) {
+					
+					if ( $my_like_options[ 'tag_' . $tag->term_id ] == 'on' ) {
+						$db_class = 'class="db_tag" ';
+						$db_checked = 'checked ';
+					} else {
+						$db_class = '';
+						$db_checked = '';
+					};
 
 					$checkbox_tag = '';
 					$checkbox_tag .= '<label><input type="checkbox" ';
+					$checkbox_tag .= $db_class;
 					$checkbox_tag .= 'name="my_like_options[tag_' . $tag->term_id . ']" ';
+					$checkbox_tag .= $db_checked;
 					$checkbox_tag .= '/>' . $tag->name . '</label><br> ';
 					
 					$list_tag .= $checkbox_tag;
@@ -152,6 +188,15 @@ function my_like_page() {
 					
 				echo $list_tag;
 				?>				
+			</td>
+			</tr>
+
+			<tr><th></th>
+			<td>
+				<button id="tag_selectall">Выделить все</button>
+				<button id="tag_cancel">Отменить выделение</button>
+				<button id="tag_invert">Инвертировать</button>
+				<button id="tag_restore">Восстановить</button>
 			</td>
 			</tr>
 

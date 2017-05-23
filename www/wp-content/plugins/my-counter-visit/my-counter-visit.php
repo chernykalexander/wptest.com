@@ -34,7 +34,7 @@ function my_counter_visit_install() {
 
 
 // Функция, которая выполняется, когда плагин деактивирован.
-register_deactivation_hook( FILE , 'my_counter_visit_deactivate()' );
+register_deactivation_hook( __FILE__ , 'my_counter_visit_deactivate()' );
 
 function my_counter_visit_deactivate() {
 	// делаем то, что нужно
