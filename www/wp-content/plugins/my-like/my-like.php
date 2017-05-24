@@ -96,6 +96,37 @@ function my_like_register_settings() {
 
 
 
+add_action( 'loop_start', 'display_like' );
+
+function display_like() {
+	
+	if ( is_tag() ) {
+		// echo "<b>Print loop</b>";
+
+		// Пути к картинкам
+		$path_like = plugins_url( 'images/like.jpg', __FILE__ );
+		$path_dislike = plugins_url( 'images/dislike.jpg', __FILE__ );
+
+		// Кнопка лайк
+		echo "<button>";
+		echo "<img src=$path_like alt=\"Лайк\" >";
+		echo "</button>";
+		echo "0 лайков";
+		echo "&nbsp;";
+
+		// Кнопка дизлайк
+		echo "<button>";
+		echo "<img src=$path_dislike alt=\"Дизлайк\" >";
+		echo "</button>";
+		echo "0 дизлайков";
+		// echo plugins_url( 'images/dislike.jpg', __FILE__ );
+
+	};
+
+};
+
+
+
 function my_like_page() {
 ?>
 	<div class="wrap">
