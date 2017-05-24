@@ -6,15 +6,15 @@
 (function( $ ) {
 	
 	$(document).ready(function() {
-		
+
+
+		/*
+		*---- Для категорий -------------------------------------------------------------------
+		*/
+
 		// Выделить все
 		$( '#cat_selectall' ).click( function() {
 			
-			// проверяет, соответствие хотя бы одного div-элемента заданному селектору
-			// if (  $( "input" ).is( '[name^="my_like_options[cat_"]' ) ) {
-			// 	console.log( 'Test' );
-			// };
-
 			$( '[name^="my_like_options[cat_"]' ).prop( "checked", true );		
 
 		});
@@ -48,9 +48,67 @@
 		$( '#cat_restore' ).click( function() {
 			
 			$( '[name^="my_like_options[cat_"]' ).each( function() {
-				// 
-			};
+
+				if ( $( this ).hasClass( 'db_cat' ) ) {
+					$( this ).prop( "checked", true );
+				} else {
+					$( this ).prop( "checked", false );
+				};
+
+			} );
+
+		} );
+		
+
+		/*
+		*---- Для тегов -------------------------------------------------------------------
+		*/
+
+		// Выделить все
+		$( '#tag_selectall' ).click( function() {
 			
+			$( '[name^="my_like_options[tag_"]' ).prop( "checked", true );		
+
+		});
+
+
+		// Отменить выделение
+		$( '#tag_cancel' ).click( function() {
+			
+			$( '[name^="my_like_options[tag_"]' ).prop( "checked", false );
+
+		});
+
+
+		// Инвертировать
+		$( '#tag_invert' ).click( function() {
+			
+			$( '[name^="my_like_options[tag_"]' ).each( function() {
+				
+				if ( this.checked ) {
+					$( this ).prop( "checked", false );
+				} else {
+					$( this ).prop( "checked", true );
+				};
+
+			} );
+
+		});
+
+
+		// Восстановить
+		$( '#tag_restore' ).click( function() {
+			
+			$( '[name^="my_like_options[tag_"]' ).each( function() {
+
+				if ( $( this ).hasClass( 'db_tag' ) ) {
+					$( this ).prop( "checked", true );
+				} else {
+					$( this ).prop( "checked", false );
+				};
+
+			} );
+
 		} );
 
 		

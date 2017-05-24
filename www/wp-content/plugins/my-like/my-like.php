@@ -194,10 +194,10 @@ function my_like_page() {
 
 			<tr><th></th>
 			<td>
-				<button id="tag_selectall">Выделить все</button>
-				<button id="tag_cancel">Отменить выделение</button>
-				<button id="tag_invert">Инвертировать</button>
-				<button id="tag_restore">Восстановить</button>
+				<input type="button" id="tag_selectall" value="Выделить все" />
+				<input type="button" id="tag_cancel" value="Отменить выделение" />
+				<input type="button" id="tag_invert" value="Инвертировать" />
+				<input type="button" id="tag_restore" value="Восстановить" />
 			</td>
 			</tr>
 
