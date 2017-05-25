@@ -104,6 +104,9 @@ function push_like() {
 	// Ставит JQuery файлы в очередь на загрузку.
 	wp_enqueue_script( 'script-jquery', plugins_url( 'js/jquery-3.2.1.min.js', __FILE__ ) );
 
+	// Подключаем основной файл стилей для фронт-енда.
+	wp_enqueue_style( 'style.css', plugins_url( 'css/style.css', __FILE__ ) );
+
 	null;
 	// Подключает скрипт если он небыл подключен ранее
 	
@@ -124,23 +127,40 @@ function display_like() {
 	
 	if ( is_tag() ) {
 		// echo "<b>Print loop</b>";
+		echo "<br>My data: <br>";
+		echo get_queried_object()->term_id;
+		echo "<br>End<br>";
 
 		// Пути к картинкам
 		$path_like = plugins_url( 'images/like.jpg', __FILE__ );
 		$path_dislike = plugins_url( 'images/dislike.jpg', __FILE__ );
 
+		echo "<div class=\"wrap\">";
+		
 		// Кнопка лайк
-		echo "<button>";
+		echo "<button id=\"like-button\">";
 		echo "<img src=$path_like alt=\"Лайк\" >";
 		echo "</button>";
-		echo "0 лайков";
-		echo "&nbsp;";
+		echo "<div id=\"like-counter\" class=\"inline-element\"> ";
+		echo "0";
+		echo "</div>";
+		echo "лайков ";
+		
+		// Разделитель
+		echo "<div class=\"inline-element\"> ";
+		// echo "&nbsp;";
+		echo "</div>";
 
 		// Кнопка дизлайк
-		echo "<button>";
+		echo "<button id=\"dislike-button\">";
 		echo "<img src=$path_dislike alt=\"Дизлайк\" >";
 		echo "</button>";
-		echo "0 дизлайков";
+		echo "<div id=\"dislike-counter\" class=\"inline-element\"> ";
+		echo "0";
+		echo "</div>";
+		echo "дизлайков ";
+		
+		echo "</div>";
 		// echo plugins_url( 'images/dislike.jpg', __FILE__ );
 
 	};
