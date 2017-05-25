@@ -96,6 +96,28 @@ function my_like_register_settings() {
 
 
 
+// Зацепка подключает скрипты и стили во фронт-энде
+add_action( 'wp_enqueue_scripts', 'push_like' );
+
+function push_like() {
+	
+	// Ставит JQuery файлы в очередь на загрузку.
+	wp_enqueue_script( 'script-jquery', plugins_url( 'js/jquery-3.2.1.min.js', __FILE__ ) );
+
+	null;
+	// Подключает скрипт если он небыл подключен ранее
+	
+	// $handle (string) (required) 
+	// Название скрипта (рабочее название). Строка в нижнем регистре.
+	
+	// $src (string) (optional) 
+	// Путь до скрипта от корневой директории WordPress. Например: "/wp-includes/js/scriptaculous/scriptaculous.js". 
+	// Этот параметр необходим только в случае, если WordPress еще не знает об этом скрипте.
+	wp_enqueue_script( 'like.js', plugins_url( 'js/like.js', __FILE__ ) );
+};
+
+
+
 add_action( 'loop_start', 'display_like' );
 
 function display_like() {
