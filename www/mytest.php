@@ -1,9 +1,11 @@
-<?php 
-	get_header();
-	// // get_sidebar();
-	// get_footer();
+<?php
+	echo "My tets";
 
-	// echo "My tets";
+	// // include 'wp-admin/includes/class-wp-screen.php';
+	// include 'wp-admin/includes/noop.php';
+	// include 'wp-includes/option.php';
+	// include 'wp-includes/taxonomy.php';
+
 	// $term_id  = 88;
 	// $meta_key = 'test_meta_field';
 
@@ -16,5 +18,5 @@
 	// $done = add_term_meta( $term_id, $meta_key, 'Привет мир 2', true );
 	// var_dump( $done ); // bool(false)
 
-
-	echo get_term_meta( 88, 'test_meta_field', true );
+	// echo get_term_meta( 88, 'test_meta_field', true );
+	
