@@ -130,23 +130,6 @@ add_action( 'wp_ajax_nopriv_add_like', 'add_like' );
 add_action( 'wp_ajax_add_like', 'add_like' );
 
 function add_like() {
-	// $love = get_post_meta( $_POST['post_id'], 'post_love', true );
-	// $love++;
-	// if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) { 
-	// 	update_post_meta( $_POST['post_id'], 'post_love', $love );
-	// 	echo $love;
-	// }
-	// die();
-
-
-	// $love = get_post_meta( $_POST['post_id'], 'post_love', true );
-	// $love++;
-	// if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) { 
-	// 	update_post_meta( $_POST['post_id'], 'post_love', $love );
-	// 	echo $love;
-	// }
-	// die();
-
 
 	// Получает значение указанного мета поля элемента таксономии (рубрики, метки, и т.д.)
 	// $term_id элемента таксономии.
@@ -154,44 +137,85 @@ function add_like() {
 	// $single в каком виде возвращать значение.
 	// false - массив значений
 	// true - единственное значение (первое из массива, если значений несколько)
-	// $like = get_term_meta( $_POST[ 'tag_id' ], 'key_like', true );
-	// $like++;
+	$like = get_term_meta( $_POST[ 'tag_id' ], 'key_like', true );
+	
+	// Добавляем еще один лайк
+	$like++;
 
 	// Обновляет мета значение term. Если его не существует то создаст.
-	// update_term_meta( $_POST[ 'tag_id' ], 'key_like', $like );
+	update_term_meta( $_POST[ 'tag_id' ], 'key_like', $like );
 
 	// Отправляем результат вызвашей аякс-функции
-	// $like = '';
-	$like = $_POST[ 'tag_id' ];
-	// $like = substr( $like, 0, 1 );
 	echo $like;
-
-	// echo get_term_meta( 88, 'test_meta_field', true );
 
 };
 
 
 
+// wp_ajax_(myname) на этот крючок можно вешать собственные обработчики AJAX-запросов
+// wp_ajax_nopriv_(myname) то же самое только для не авторизованных пользователей
+add_action( 'wp_ajax_nopriv_add_dislike', 'add_dislike' );
+add_action( 'wp_ajax_add_dislike', 'add_dislike' );
+
+function add_dislike() {
+
+	// Получает значение указанного мета поля элемента таксономии (рубрики, метки, и т.д.)
+	// $term_id элемента таксономии.
+	// $key ключ мета поля.
+	// $single в каком виде возвращать значение.
+	// false - массив значений
+	// true - единственное значение (первое из массива, если значений несколько)
+	$dislike = get_term_meta( $_POST[ 'tag_id' ], 'key_dislike', true );
+	
+	// Добавляем еще один дизлайк
+	$dislike++;
+
+	// Обновляет мета значение term. Если его не существует то создаст.
+	update_term_meta( $_POST[ 'tag_id' ], 'key_dislike', $dislike );
+
+	// Отправляем результат вызвашей аякс-функции
+	echo $dislike;
+
+};
+
+
+
+// Вешаем на зацепку начало цикла
+// Виджет (последние записи) также использует цикл. Его убрал
 add_action( 'loop_start', 'display_like' );
 
 function display_like() {
 	
+	// Отображается страница тегов?
 	if ( is_tag() ) {
-		// echo "<b>Print loop</b>";
-		// echo "<br>My data: <br>";
-		// echo get_queried_object()->term_id;
-		// echo "<br>End<br>";
 
 		// Получаем id текущего тега
 		$tag_id = get_queried_object()->term_id;
+		
+		// Получаем количество лайков для текущего тега
+		$count_like = get_term_meta( $tag_id, 'key_like', true );
 
-		// Скрытое поле с id тега
-		echo "<input type=\"hidden\" id=\"tag_id\" value=\"$tag_id\">";
+		// Если нет нни одного лайка то выводим 0 на экран
+		if ( empty( $count_like ) ) {
+			$count_like = 0;
+		};
+		
+		// Получаем количество Дизлайков для текущего тега
+		$count_dislike = get_term_meta( $tag_id, 'key_dislike', true );
+
+		// Если нет нни одного дизлайка то выводим 0 на экран
+		if ( empty( $count_dislike ) ) {
+			$count_dislike = 0;
+		};
 
 		// Пути к картинкам
 		$path_like = plugins_url( 'images/like.jpg', __FILE__ );
 		$path_dislike = plugins_url( 'images/dislike.jpg', __FILE__ );
 
+		// Скрытое поле с id тега
+		// Необходимо, чтобы аякс-функция знала с каким тегом она работает
+		echo "<input type=\"hidden\" id=\"tag_id\" value=\"$tag_id\">";
+		
 		echo "<div class=\"wrap\">";
 		
 		// Кнопка лайк
@@ -199,13 +223,12 @@ function display_like() {
 		echo "<img src=$path_like alt=\"Лайк\" >";
 		echo "</button>";
 		echo "<div id=\"like-counter\" class=\"inline-element\"> ";
-		echo "0";
+		echo $count_like;
 		echo "</div>";
 		echo "лайков ";
 		
 		// Разделитель
 		echo "<div class=\"inline-element\"> ";
-		// echo "&nbsp;";
 		echo "</div>";
 
 		// Кнопка дизлайк
@@ -213,14 +236,13 @@ function display_like() {
 		echo "<img src=$path_dislike alt=\"Дизлайк\" >";
 		echo "</button>";
 		echo "<div id=\"dislike-counter\" class=\"inline-element\"> ";
-		echo "0";
+		echo $count_dislike;
 		echo "</div>";
 		echo "дизлайков ";
 		
 		echo "</div>";
-		// echo plugins_url( 'images/dislike.jpg', __FILE__ );
 
-	};
+	}; // end is_tag()
 
 };
 
