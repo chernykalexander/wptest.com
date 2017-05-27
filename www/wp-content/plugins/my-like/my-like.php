@@ -203,7 +203,7 @@ function display_like() {
 		// Получаем количество Дизлайков для текущего тега
 		$count_dislike = get_term_meta( $tag_id, 'key_dislike', true );
 
-		// Если нет нни одного дизлайка то выводим 0 на экран
+		// Если нет ни одного дизлайка то выводим 0 на экран
 		if ( empty( $count_dislike ) ) {
 			$count_dislike = 0;
 		};
