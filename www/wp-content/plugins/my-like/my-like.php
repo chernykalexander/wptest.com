@@ -117,6 +117,57 @@ function push_like() {
 	// Путь до скрипта от корневой директории WordPress. Например: "/wp-includes/js/scriptaculous/scriptaculous.js". 
 	// Этот параметр необходим только в случае, если WordPress еще не знает об этом скрипте.
 	wp_enqueue_script( 'like.js', plugins_url( 'js/like.js', __FILE__ ) );
+
+	// Добавляет дополнительные данные перед указанным скриптом, который должен быть в очереди на вывод.
+	wp_localize_script( 'like.js', 'postlike', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
+};
+
+
+
+// wp_ajax_(myname) на этот крючок можно вешать собственные обработчики AJAX-запросов
+// wp_ajax_nopriv_(myname) то же самое только для не авторизованных пользователей
+add_action( 'wp_ajax_nopriv_add_like', 'add_like' );
+add_action( 'wp_ajax_add_like', 'add_like' );
+
+function add_like() {
+	// $love = get_post_meta( $_POST['post_id'], 'post_love', true );
+	// $love++;
+	// if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) { 
+	// 	update_post_meta( $_POST['post_id'], 'post_love', $love );
+	// 	echo $love;
+	// }
+	// die();
+
+
+	// $love = get_post_meta( $_POST['post_id'], 'post_love', true );
+	// $love++;
+	// if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) { 
+	// 	update_post_meta( $_POST['post_id'], 'post_love', $love );
+	// 	echo $love;
+	// }
+	// die();
+
+
+	// Получает значение указанного мета поля элемента таксономии (рубрики, метки, и т.д.)
+	// $term_id элемента таксономии.
+	// $key ключ мета поля.
+	// $single в каком виде возвращать значение.
+	// false - массив значений
+	// true - единственное значение (первое из массива, если значений несколько)
+	// $like = get_term_meta( $_POST[ 'tag_id' ], 'key_like', true );
+	// $like++;
+
+	// Обновляет мета значение term. Если его не существует то создаст.
+	// update_term_meta( $_POST[ 'tag_id' ], 'key_like', $like );
+
+	// Отправляем результат вызвашей аякс-функции
+	// $like = '';
+	$like = $_POST[ 'tag_id' ];
+	// $like = substr( $like, 0, 1 );
+	echo $like;
+
+	// echo get_term_meta( 88, 'test_meta_field', true );
+
 };
 
 
@@ -127,9 +178,15 @@ function display_like() {
 	
 	if ( is_tag() ) {
 		// echo "<b>Print loop</b>";
-		echo "<br>My data: <br>";
-		echo get_queried_object()->term_id;
-		echo "<br>End<br>";
+		// echo "<br>My data: <br>";
+		// echo get_queried_object()->term_id;
+		// echo "<br>End<br>";
+
+		// Получаем id текущего тега
+		$tag_id = get_queried_object()->term_id;
+
+		// Скрытое поле с id тега
+		echo "<input type=\"hidden\" id=\"tag_id\" value=\"$tag_id\">";
 
 		// Пути к картинкам
 		$path_like = plugins_url( 'images/like.jpg', __FILE__ );
