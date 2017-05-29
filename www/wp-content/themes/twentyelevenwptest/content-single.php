@@ -35,7 +35,7 @@
 				$category = get_the_category();
 				$my_query = new WP_Query("category_name=".$category[0]->name."&showposts=5&orderby=rand");
 				while ($my_query->have_posts()) : $my_query->the_post();
-					echo '<li><a href="'. $post->permalink . '"> ' . $post->post_title .'</a></li>';
+					echo '<li><a href="'. get_permalink($post->ID) . '"> ' . $post->post_title .'</a></li>';
 				endwhile;
 			?>
 		</ul>
@@ -49,13 +49,16 @@
 		<h2>Отображение дополнительных записей того же автора:</h2>
 		<ul id="related">
 			<?php
+				
 				$author = get_the_author_meta('id');
-				$my_queny = new WP_Query( "author=" . $author . "&showposts=5&orderby=rand" );
+				$my_query = new WP_Query( "author=" . $author . "&showposts=5&orderby=rand" );
 			
 				while ($my_query->have_posts()) : $my_query->the_post();
-					echo '<li><a href="'. $post->permalink . '"> ' . $post->post_title .'</a></li>';
+					echo '<li><a href="'. '12345' . '"> ' . get_the_title() .'</a></li>';
 				endwhile;
 
+				/* Возвращаем оригинальные данные поста. Сбрасываем $post. */
+				wp_reset_postdata();
 			?>
 		</ul>
 

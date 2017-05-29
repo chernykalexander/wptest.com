@@ -15,9 +15,9 @@ License: GPLv2
 // Она принимает два параметра: 
 // 1. путь к основному файлу плагина 
 // 2. функцию для выполнения после его активации.
-register_activation_hook( __FILE__ , 'my_like_install' );
+register_activation_hook( __FILE__ , 'my_relevant_install' );
 
-function my_like_install() {
+function my_relevant_install() {
 	// Функция использует глобальную переменную $wp_version,
 	// которая хранит информацию об используемой в данный момент версии WordPress
 	// и подтверждает, что она не ниже версии 3.5. Сравнение версий осуществляется
@@ -36,15 +36,94 @@ function my_like_install() {
 
 
 // Функция, которая выполняется, когда плагин деактивирован.
-register_deactivation_hook( __FILE__ , 'my_like_deactivate' );
+register_deactivation_hook( __FILE__ , 'my_relevant_deactivate' );
 
-function my_like_deactivate() {
+function my_relevant_deactivate() {
 	// делаем то, что нужно
 	
 	// Удаляем опции релевантного контента
 	delete_option( 'my_relevant_options' );
 	delete_option( 'my_relevant_count_options' );
 };
+
+
+
+add_action( 'comment_form_before', 'my_relevant_display', 9 );
+
+// Выводим рекламу под шапкой сайта на всех страницах
+function my_relevant_display() {
+	
+	echo '<hr>';
+	
+	echo '<div align="center">';
+	echo '<strong>relevant</strong>';
+	echo '</div>';
+
+	// Читаем параметры плагина из таблицы wp_options
+	$r_options = get_option( 'my_relevant_options' ); 
+	$r_count = get_option( 'my_relevant_count_options' );
+
+	// Если количество записей 0 то выходим
+	if ( empty( $r_count ) || ($r_count == 0 ) ) {
+		return;
+	};
+
+	// Определяемся с настройками
+	
+	// Заголовок/Поясняющая фраза плагина
+	$r_head = '';
+	
+	// Тип контента: берем данные похожие по категории или по автору
+	$r_type = '';
+	
+	// Переменная будет хранить произвольный цикл WordPress
+	$r_query = '';
+
+	// Настраиваем вывод случайных записей
+	if ( $r_options == 'random' ) {
+
+		$r_head = 'Пять случайных записей из первой рубрики данной записи:';		
+		$r_type = get_the_category();
+		$r_query = new WP_Query( "category_name=" . $r_type[0]->name . "&showposts=" . $r_count . "&orderby=rand" );
+	
+	// Настраиваем вывод записей того же автора
+	} elseif ( $r_options == 'author' ) {
+		
+		$r_head = 'Отображение дополнительных записей того же автора:';
+		$r_type = get_the_author_meta( 'id' );
+		$r_query = new WP_Query( "author=" . $r_type . "&showposts=" . $r_count . "&orderby=rand" );
+	
+	// Если параметров нет то выходим из функции
+	} else {
+		//
+		return;
+	};
+
+
+
+	// Формируем релевантный блок
+	?>
+
+	<div class="entry-content">
+		
+		<h2><?php echo $r_head; ?></h2>
+		<ul id="related">
+			<?php
+									
+				while ( $r_query->have_posts() ) : $r_query->the_post();
+					echo '<li><a href="'. get_permalink($post->ID) . '"> ' . get_the_title() .'</a></li>';
+				endwhile;
+
+			?>
+		</ul>
+
+	</div>
+
+	<?php
+
+	echo '<hr>';
+};
+
 
 
 
@@ -68,7 +147,7 @@ function my_relevant_create_submenu() {
 	);
 
 	// вызываем функцию для регистрации настроек
-	// add_action( 'admin_init', 'my_relevant_register_settings' );
+	add_action( 'admin_init', 'my_relevant_register_settings' );
 };
 
 
@@ -84,7 +163,8 @@ function my_relevant_register_settings() {
 	// Это обязательное поле должно быть групповым именем, идентифицирующим все параметры в наборе. 
 	// Второй параметр — действительное имя параметра, которое должно быть уникальным.
 	// Третий параметр — функция обратного вызова для очистки значений параметров.
-	// register_setting( 'my_relevant_group', 'my_relevant_options' );
+	register_setting( 'my_relevant_group', 'my_relevant_options' );
+	register_setting( 'my_relevant_group', 'my_relevant_count_options' );
 
 };
 
@@ -97,8 +177,13 @@ function my_relevant_page() {
 	<form method="post" action="options.php">
 
 		<?php 
+
+			settings_fields( 'my_relevant_group' );
+			do_settings_sections( 'my_relevant_group' );
+
 			$my_relevant_options = get_option( 'my_relevant_options' ); 
 			$my_relevant_count_options = get_option( 'my_relevant_count_options' ); 
+
 		?>
 
 		<table class="form-table">
@@ -121,7 +206,7 @@ function my_relevant_page() {
 			<th scope="row">Количество релевантного контента:</th>
 			<td>
 				<p>
-				<input type="number" size="5" name="num" min="0" max="30" value="<?php echo $my_relevant_count_options; ?>">
+				<input type="number" size="5" name="my_relevant_count_options" min="0" max="30" value="<?php echo $my_relevant_count_options; ?>">
 				Введите число от 0 до 30.
 				</p>
 			</td>
@@ -136,8 +221,4 @@ function my_relevant_page() {
 	</form>
 	</div>
 <?php
-} 
-?>
-
-
-
+}
