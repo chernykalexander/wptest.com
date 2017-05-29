@@ -55,10 +55,6 @@ function my_relevant_display() {
 	
 	echo '<hr>';
 	
-	echo '<div align="center">';
-	echo '<strong>relevant</strong>';
-	echo '</div>';
-
 	// Читаем параметры плагина из таблицы wp_options
 	$r_options = get_option( 'my_relevant_options' ); 
 	$r_count = get_option( 'my_relevant_count_options' );

@@ -24,48 +24,6 @@
 		<?php wp_link_pages( array( 'before' => '<div class="page-link"><span>' . __( 'Pages:', 'twentyeleven' ) . '</span>', 'after' => '</div>' ) ); ?>
 	</div><!-- .entry-content -->
 
-	<div class="entry-content">
-		
-		<h2>Пять случайных записей из первой рубрики данной записи:</h2>
-		<ul id="related">
-			<?php
-				// Здесь вы получаете пять случайно выбранных записей из первой рубрики данной
-				// записи. Это не самый разумный, но простой способ отобразить некоторые ссылки на
-				// связанный контент на странице отдельной записи.
-				$category = get_the_category();
-				$my_query = new WP_Query("category_name=".$category[0]->name."&showposts=5&orderby=rand");
-				while ($my_query->have_posts()) : $my_query->the_post();
-					echo '<li><a href="'. get_permalink($post->ID) . '"> ' . $post->post_title .'</a></li>';
-				endwhile;
-			?>
-		</ul>
-
-	</div>
-
-
-
-	<div class="entry-content">
-		
-		<h2>Отображение дополнительных записей того же автора:</h2>
-		<ul id="related">
-			<?php
-				
-				$author = get_the_author_meta('id');
-				$my_query = new WP_Query( "author=" . $author . "&showposts=5&orderby=rand" );
-			
-				while ($my_query->have_posts()) : $my_query->the_post();
-					echo '<li><a href="'. '12345' . '"> ' . get_the_title() .'</a></li>';
-				endwhile;
-
-				/* Возвращаем оригинальные данные поста. Сбрасываем $post. */
-				wp_reset_postdata();
-			?>
-		</ul>
-
-	</div>
-
-
-
 	<footer class="entry-meta">
 		<?php
 			/* translators: used between list items, there is a space after the comma */
